@@ -14,7 +14,7 @@
     />
     <style>
       :root{
-        --bg:#faf8f3; --surface:#ffffff; --surface-2:#f0eadf; --surface-3:#e9e2d2;
+        --bg:#faf8f3; --surface:#ffffff; --surface-2:#f0eadf; --surface-3:#e9e2d2; --product-image-bg:#f7f7f3;
         --ink:#14201a; --muted:#64736a; --faint:#8a978e;
         --line:#e3ddd0; --line-strong:#d4cbb6;
         --brand:#075e3a; --brand-strong:#04482c; --brand-deep:#063f2a; --brand-soft:#e3f0e7;
@@ -31,7 +31,7 @@
       }
       @media (prefers-color-scheme:dark){
         :root{
-          --bg:#0c1210; --surface:#15201b; --surface-2:#1b2a22; --surface-3:#24362c;
+          --bg:#0c1210; --surface:#15201b; --surface-2:#1b2a22; --surface-3:#24362c; --product-image-bg:#f2f2ed;
           --ink:#ecf3ec; --muted:#a7bcae; --faint:#7e937f;
           --line:#263a2f; --line-strong:#37503f;
           --brand:#43cf82; --brand-strong:#7fe3a8; --brand-deep:#0b2f21; --brand-soft:#163626;
@@ -151,9 +151,8 @@
       @media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr);gap:.85rem}}
       .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
       .card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
-      .card-media{position:relative;aspect-ratio:4/3;background:var(--surface-2);overflow:hidden}
-      .card-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
-      .card:hover .card-media img{transform:scale(1.05)}
+      .card-media{position:relative;aspect-ratio:1/1;background:var(--product-image-bg);overflow:hidden}
+      .card-media img{width:100%;height:100%;object-fit:contain;object-position:center;padding:.35rem;background:var(--product-image-bg);transition:transform .6s var(--ease)}
       .badge{position:absolute;top:.75rem;left:.75rem;background:var(--gold);color:var(--gold-ink);font:800 .7rem var(--font-body);padding:.32rem .65rem;border-radius:var(--r-full);text-transform:uppercase;letter-spacing:.05em;box-shadow:var(--shadow-sm)}
       .card-body{padding:1.1rem 1.15rem 1.25rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
       .card-cat{font-size:.74rem;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.08em}
@@ -366,7 +365,6 @@
       /* rating row */
       .rating-row{display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:700;color:var(--muted)}
       .stars{color:var(--gold-strong);letter-spacing:.06em;font-size:.86rem;line-height:1}
-      .card-trust{font-size:.76rem;color:var(--muted);font-weight:600}
       /* deals rail + category rails */
       .rail-wrap{margin-bottom:1.6rem}
       .rail-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap}
@@ -667,7 +665,6 @@
       .policy{padding:2rem 1.75rem}
       .review-card,.account-profile,.account-edit,.order-card,.lookup-box,.form-card,.imp-card{padding:1.45rem 1.5rem}
       .card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-      .card:hover .card-media img{transform:scale(1.025)}
       .step:hover,.budget-card:hover{transform:translateY(-2px)}
       .reveal.in{animation-duration:.55s}
       footer{background:var(--brand-deep);border-top-color:color-mix(in srgb,var(--gold) 26%,transparent);color:var(--hero-ink)}
@@ -859,7 +856,7 @@
           </div>
           <div id="catSections"></div>
           <h2 style="font-size:clamp(1.35rem,2.6vw,1.8rem); margin-bottom:1rem;">All Products</h2>
-          <div class="grid" id="productGrid" aria-live="polite"><div class="skeleton"><div class="sk" style="aspect-ratio:4/3"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:4/3"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:4/3"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:4/3"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div></div>
+          <div class="grid" id="productGrid" aria-live="polite"><div class="skeleton"><div class="sk" style="aspect-ratio:1/1"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:1/1"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:1/1"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div><div class="skeleton"><div class="sk" style="aspect-ratio:1/1"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div></div></div>
           <div class="load-more-wrap hidden" id="loadMoreWrap"><button type="button" class="btn btn-ghost" id="loadMoreBtn">Load more</button></div>
         </div>
       </section>
@@ -2019,7 +2016,7 @@
         card._product = p;
         card.innerHTML =
           '<div class="card-media">' +
-            '<img src="' + escapeHtml(img) + '" alt="' + escapeHtml(p.name) + '" width="600" height="450" decoding="async" loading="' + (priority ? "eager" : "lazy") + '"' + (priority ? ' fetchpriority="high"' : "") + ' />' +
+            '<img src="' + escapeHtml(img) + '" alt="' + escapeHtml(p.name) + '" width="600" height="600" decoding="async" loading="' + (priority ? "eager" : "lazy") + '"' + (priority ? ' fetchpriority="high"' : "") + ' />' +
             (savePct ? '<span class="badge">-' + savePct + "%</span>" : (p.badge ? '<span class="badge">' + escapeHtml(p.badge) + "</span>" : "")) +
             (!inStock ? '<span class="badge" style="background:var(--danger); color:#fff;' + (savePct ? " top:3.2rem;" : "") + '">Out of stock</span>' : "") +
             '<button type="button" class="heart-btn" aria-label="Add to wishlist">' + heartSvg() + "</button>" +
@@ -2032,7 +2029,6 @@
               '<span class="price">' + fmt(price) + "</span>" +
               (oldP > price ? '<span class="old-price">' + fmt(oldP) + "</span>" : "") +
             "</div>" +
-            '<span class="card-trust">100% original · Warranty: ' + escapeHtml(p.warranty || "7-day check guarantee") + ' · Delivery 2–4 days · Easypaisa / JazzCash</span>' +
             '<button type="button" class="btn btn-brand btn-block order-btn"' + (inStock ? "" : " disabled") + ">" + (inStock ? "Order now" : "Out of stock") + "</button>" +
           "</div>";
         const heart = card.querySelector(".heart-btn");
@@ -2073,7 +2069,7 @@
       function productSkeleton() {
         const s = document.createElement("div");
         s.className = "skeleton load-more-skeleton";
-        s.innerHTML = '<div class="sk" style="aspect-ratio:4/3"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div>';
+        s.innerHTML = '<div class="sk" style="aspect-ratio:1/1"></div><div style="padding:1rem"><div class="sk" style="height:14px;border-radius:6px"></div><div class="sk" style="height:20px;border-radius:6px;margin-top:.6rem"></div><div class="sk" style="height:14px;border-radius:6px;margin-top:.6rem;width:60%"></div></div>';
         return s;
       }
 
