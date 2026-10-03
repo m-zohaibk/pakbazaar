@@ -259,9 +259,32 @@
       @media(min-width:901px){.toast{bottom:1.4rem}}
       /* auth / orders / admin */
       .orders-list{display:grid;gap:1rem}
-      .order-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.2rem 1.25rem;box-shadow:var(--shadow-sm)}
+      .orders-guest{display:grid;grid-template-columns:1fr auto;gap:1.2rem;align-items:center;background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 28%,var(--line));border-radius:var(--r-lg);padding:1.2rem 1.25rem;margin-bottom:1rem}
+      .orders-guest h3{font-size:1.18rem}.orders-guest p{color:var(--muted);font-size:.92rem;margin-top:.3rem}
+      .orders-guest-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+      .order-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.2rem 1.25rem;box-shadow:var(--shadow-sm);transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+      .order-card[data-open-order]{cursor:pointer}
+      .order-card[data-open-order]:hover{border-color:color-mix(in srgb,var(--brand) 45%,var(--line));box-shadow:var(--shadow);transform:translateY(-2px)}
+      .order-card[data-open-order]:focus-visible{outline:3px solid color-mix(in srgb,var(--gold) 65%,transparent);outline-offset:2px}
       .order-card .meta{color:var(--muted);font-size:.88rem;margin-top:.3rem}
+      .order-card-top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:flex-start}
+      .order-number{font-family:var(--font-display);font-size:1.16rem;font-weight:800;color:var(--ink)}
+      .order-date{color:var(--muted);font-size:.82rem;font-weight:600;margin-top:.1rem}
+      .order-items-mini{display:grid;gap:.25rem;margin-top:.8rem;color:var(--ink);font-size:.93rem}
+      .order-items-mini span{display:flex;justify-content:space-between;gap:1rem}
+      .order-total{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;border-top:1px dashed var(--line);margin-top:.75rem;padding-top:.65rem}
+      .order-total span{color:var(--muted);font-size:.88rem}.order-total strong{font-family:var(--font-display);font-size:1.18rem;color:var(--brand)}
+      .order-open-hint{display:flex;align-items:center;justify-content:flex-end;gap:.35rem;color:var(--brand);font-size:.82rem;font-weight:800;margin-top:.65rem}
       .status-pill{display:inline-block;padding:.28rem .7rem;border-radius:var(--r-full);font-weight:800;font-size:.76rem;background:var(--gold-soft);color:var(--gold-ink);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
+      .order-detail-status{display:flex;justify-content:space-between;gap:1rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem;margin-top:1.15rem}
+      .order-detail-status small{display:block;color:var(--muted);font-size:.76rem;font-weight:700}.order-detail-status strong{font-size:1rem}
+      .order-detail-items{display:grid;gap:.6rem;margin-top:.85rem}
+      .order-detail-item{display:flex;justify-content:space-between;gap:1rem;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:.75rem .85rem;font-size:.92rem}
+      .order-detail-item small{display:block;color:var(--muted);margin-top:.15rem}.order-detail-item .oi-price{white-space:nowrap;font-weight:800;color:var(--brand)}
+      .order-facts{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:1rem}
+      .order-fact{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:.7rem .8rem;min-width:0}
+      .order-fact small{display:block;color:var(--muted);font-size:.74rem;font-weight:700}.order-fact strong{display:block;margin-top:.15rem;overflow-wrap:anywhere}
+      @media(max-width:560px){.orders-guest{grid-template-columns:1fr}.orders-guest-actions .btn{flex:1}.order-facts{grid-template-columns:1fr}.order-card{padding:1rem}.order-card .timeline li{font-size:10px}}
       .timeline{display:flex;list-style:none;margin:1rem 0 .2rem;padding:0;gap:0}
       .timeline li{flex:1;text-align:center;position:relative;font-size:12px;font-weight:700;color:var(--faint);padding-top:1.35rem;line-height:1.3;min-width:0;overflow-wrap:break-word}
       .timeline li::before{content:"";position:absolute;top:.28rem;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:var(--surface);border:2.5px solid var(--line-strong);z-index:1}
@@ -851,9 +874,13 @@
 
       <section id="my-orders" data-page="my-orders" class="hidden" style="padding-top:0.5rem;">
         <div class="wrap">
-          <div class="sec-head"><h2>My Orders</h2><p>See your orders here. When we change the status or add tracking, you see it here at once.</p></div>
-          <div class="lookup-box">
-            <h3 style="font-size:1.1rem;">Track your order — no login needed</h3>
+          <div class="sec-head"><h2>My Orders</h2><p id="ordersIntro">Login to see every order and its latest delivery status.</p></div>
+          <div class="orders-guest" id="ordersGuestPrompt">
+            <div><h3>Login to see all your orders</h3><p>Your orders and their latest status will appear here automatically.</p></div>
+            <div class="orders-guest-actions"><button class="btn btn-brand btn-sm" id="ordersLoginBtn" type="button">Login</button><button class="btn btn-ghost btn-sm" id="ordersSignupBtn" type="button">Create account</button></div>
+          </div>
+          <div class="lookup-box" id="ordersLookupBox">
+            <h3 style="font-size:1.1rem;">Track an order without login</h3>
             <p style="color:var(--muted); font-size:.92rem; margin-top:.3rem;">Write your order number (like PB-ABC123) and the mobile number you used in the order.</p>
             <div class="two-col" style="margin-top:.4rem;">
               <div class="field"><label for="lkOrder">Order number</label><input type="text" id="lkOrder" placeholder="PB-XXXXXX" /></div>
@@ -863,7 +890,7 @@
             <p class="err" id="lkErr"></p>
             <div id="lkResult" style="margin-top:1rem;"></div>
           </div>
-          <div class="orders-list" id="myOrdersList"><p style="color:var(--muted)">Login to see your orders.</p></div>
+          <div class="orders-list" id="myOrdersList"><p style="color:var(--muted)">Login to see your orders, or use the order lookup above.</p></div>
         </div>
       </section>
 
@@ -1493,6 +1520,16 @@
       </div>
     </div>
 
+    <div class="overlay" id="orderDetailOverlay" aria-hidden="true">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="orderDetailTitle">
+        <div class="sheet-head">
+          <div><h2 id="orderDetailTitle">Order details</h2><p id="orderDetailSub">Latest order status and full journey</p></div>
+          <button class="icon-btn" id="orderDetailClose" type="button" aria-label="Close order details">✕</button>
+        </div>
+        <div id="orderDetailBody"></div>
+      </div>
+    </div>
+
 <nav class="bottom-nav" aria-label="Quick navigation">
       <a href="#home"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.4-4.2A1 1 0 0 1 7.1 2h9.8a1 1 0 0 1 .7.3L22 7"/><path d="M2 7h20v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1Z"/><path d="M9 21v-6h6v6"/></svg>Home</a>
       <a href="#shop"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16l-1.2 12.2a1 1 0 0 1-1 .8H6.2a1 1 0 0 1-1-.8L4 7Z"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/></svg>Shop</a>
@@ -1633,6 +1670,7 @@
       let reviewsCache = [];
       let reviewAgg = {};
       let myOrdersCache = [];
+      let openOrderDetailId = "";
       let adminOrdersCache = [];
       let detailProduct = null;
       let detailRating = 0;
@@ -1662,6 +1700,7 @@
         return e.message || "Something went wrong. Please try again.";
       }
       const STATUS_LABELS = { new:"New order", received:"Order received", proof_submitted:"Payment proof sent", verified:"Payment OK", payment_verified:"Payment OK", order_placed:"Order placed", packed:"Packed", shipped:"On the way", out_for_delivery:"Out for delivery", delivered:"Delivered", closed:"Closed" };
+      const CUSTOMER_STATUS_LABELS = { new:"Pending", received:"Pending", proof_submitted:"Payment checking", verified:"Confirmed", payment_verified:"Confirmed", order_placed:"Confirmed", packed:"Packed", shipped:"Shipped", out_for_delivery:"Out for delivery", delivered:"Delivered", closed:"Closed" };
       const STATUS_KEYS = ["new","proof_submitted","verified","packed","shipped","out_for_delivery","delivered","closed"];
       const STAGE_OF = { new:"new", received:"new", proof_submitted:"proof_submitted", verified:"verified", payment_verified:"verified", order_placed:"verified", packed:"packed", shipped:"shipped", out_for_delivery:"out_for_delivery", delivered:"delivered", closed:"closed" };
       const ADMIN_STAGES = [
@@ -3313,46 +3352,158 @@
 
       /* ---------------- My Orders ---------------- */
       function fmtDate(ts){
-        try { if(!ts) return ""; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString("en-PK"); } catch(e){ return ""; }
+        try { if(!ts) return ""; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString("en-PK", { dateStyle:"medium", timeStyle:"short" }); } catch(e){ return ""; }
       }
-      function orderCardHtml(o){
-        const label = STATUS_LABELS[o.status] || "Order received";
-        let html = '<div style="display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; align-items:center;"><strong style="font-family:var(--font-display); font-size:1.15rem;">'+escapeHtml(o.productName||"")+'</strong><span class="status-pill">'+escapeHtml(label)+'</span></div>';
+      function orderTime(ts){
+        try { if(!ts) return 0; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.getTime() || 0; } catch(e){ return 0; }
+      }
+      function orderItems(o){
+        if (Array.isArray(o.items) && o.items.length) {
+          return o.items.map(function(item){
+            return {
+              name: item.name || item.productName || item.title || "Item",
+              qty: Number(item.quantity || item.qty || 1),
+              variant: item.variant || item.color || "",
+              total: Number(item.total || item.lineTotal || ((item.price || 0) * (item.quantity || item.qty || 1))) || 0
+            };
+          });
+        }
+        return [{ name:o.productName || "Item", qty:Number(o.quantity || 1), variant:o.variant || "", total:Number(o.subtotal || o.amount || 0) || 0 }];
+      }
+      function orderItemsMiniHtml(o){
+        return '<div class="order-items-mini">' + orderItems(o).map(function(item){
+          const detail = item.qty + (item.variant ? ' · '+escapeHtml(item.variant) : '');
+          return '<span><b>'+escapeHtml(item.name)+'</b><small>'+detail+'</small></span>';
+        }).join("") + '</div>';
+      }
+      function orderCardHtml(o, showOpenHint){
+        const label = CUSTOMER_STATUS_LABELS[o.status] || "Order received";
+        let html = '<div class="order-card-top"><div><div class="order-number">Order '+escapeHtml(o.orderNumber || o._id || "")+'</div><div class="order-date">'+escapeHtml(fmtDate(o.createdAt) || "Date not available")+'</div></div><span class="status-pill">'+escapeHtml(label)+'</span></div>';
         html += timelineHtml(o.status);
-        html += '<div class="meta">Order '+escapeHtml(o.orderNumber||"")+' · '+escapeHtml(fmt(o.amount||0))+' · Items: '+escapeHtml(String(o.quantity||1))+(o.variant ? ' · Color: '+escapeHtml(o.variant) : '')+(o.createdAt ? ' · '+escapeHtml(fmtDate(o.createdAt)) : '')+'</div>';
+        html += orderItemsMiniHtml(o);
+        html += '<div class="order-total"><span>Total</span><strong>'+escapeHtml(fmt(o.amount||0))+'</strong></div>';
         if (o.trackingNumber) html += '<div class="meta">Tracking: <strong style="color:var(--ink)">'+escapeHtml(o.trackingNumber)+'</strong></div>';
-        if (o.status === "proof_submitted") html += '<div class="meta">We got your payment proof. We are checking it. Then we pack and send your parcel.</div>';
-        else if (o.status === "delivered") html += '<div class="meta" style="margin-top:.4rem;">Your parcel is with you. You have a <strong>7 days check guarantee</strong>. If it is broken or not good, send us a photo or video on WhatsApp within 7 days.</div>';
-        else if (o.status === "shipped" || o.status === "out_for_delivery") html += '<div class="meta">Your order is on the way. Follow the latest delivery updates here.</div>';
+        if (showOpenHint) html += '<div class="order-open-hint">View full details <span aria-hidden="true">→</span></div>';
         return html;
       }
+      function orderStatusMessage(o){
+        if (o.status === "proof_submitted") return "We received your payment proof and are checking it now.";
+        if (o.status === "verified" || o.status === "payment_verified" || o.status === "order_placed") return "Your payment is confirmed. We will prepare your order next.";
+        if (o.status === "packed") return "Your order is packed and ready to leave.";
+        if (o.status === "shipped") return "Your order has been shipped and is on the way.";
+        if (o.status === "out_for_delivery") return "Your order is out for delivery.";
+        if (o.status === "delivered") return "Your order has been delivered.";
+        return "We received your order and will update its status here.";
+      }
+      const orderDetailOverlay = $("#orderDetailOverlay");
+      function renderOrderDetail(o){
+        if (!o) return;
+        $("#orderDetailTitle").textContent = "Order " + (o.orderNumber || o._id || "details");
+        $("#orderDetailSub").textContent = fmtDate(o.createdAt) || "Latest order status";
+        const itemsHtml = orderItems(o).map(function(item){
+          return '<div class="order-detail-item"><div><strong>'+escapeHtml(item.name)+'</strong><small>Quantity: '+escapeHtml(String(item.qty))+(item.variant ? ' · '+escapeHtml(item.variant) : '')+'</small></div>'+(item.total ? '<span class="oi-price">'+escapeHtml(fmt(item.total))+'</span>' : '')+'</div>';
+        }).join("");
+        let facts = '<div class="order-fact"><small>Order total</small><strong>'+escapeHtml(fmt(o.amount||0))+'</strong></div>';
+        facts += '<div class="order-fact"><small>Latest status</small><strong>'+escapeHtml(CUSTOMER_STATUS_LABELS[o.status] || "Order received")+'</strong></div>';
+        if (o.trackingNumber) facts += '<div class="order-fact"><small>Tracking number</small><strong>'+escapeHtml(o.trackingNumber)+'</strong></div>';
+        if (o.paymentMethod) facts += '<div class="order-fact"><small>Payment</small><strong>'+escapeHtml(o.paymentMethod)+'</strong></div>';
+        $("#orderDetailBody").innerHTML = '<div class="order-detail-status"><div><small>Latest update</small><strong>'+escapeHtml(orderStatusMessage(o))+'</strong></div><span class="status-pill">'+escapeHtml(CUSTOMER_STATUS_LABELS[o.status] || "Order received")+'</span></div>'+timelineHtml(o.status)+'<h3 style="font-size:1.1rem;margin-top:1.2rem;">Items</h3><div class="order-detail-items">'+itemsHtml+'</div><div class="order-facts">'+facts+'</div>';
+      }
+      function openOrderDetail(o){
+        openOrderDetailId = o._id || "";
+        renderOrderDetail(o);
+        orderDetailOverlay.classList.add("open");
+        orderDetailOverlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+      function closeOrderDetail(){
+        openOrderDetailId = "";
+        orderDetailOverlay.classList.remove("open");
+        orderDetailOverlay.setAttribute("aria-hidden", "true");
+        if (!overlay.classList.contains("open") && !authOverlay.classList.contains("open") && !pdOverlay.classList.contains("open")) document.body.style.overflow = "";
+      }
+      $("#orderDetailClose").addEventListener("click", closeOrderDetail);
+      orderDetailOverlay.addEventListener("click", function(e){ if(e.target === orderDetailOverlay) closeOrderDetail(); });
+      $("#ordersLoginBtn").addEventListener("click", function(){ openAuth("login"); });
+      $("#ordersSignupBtn").addEventListener("click", function(){ openAuth("signup"); });
+      function updateOrdersAccessUi(){
+        const logged = !!currentUser;
+        $("#ordersGuestPrompt").classList.toggle("hidden", logged);
+        $("#ordersLookupBox").classList.toggle("hidden", logged);
+        $("#ordersIntro").textContent = logged ? "Your orders appear newest first. Status changes show here automatically." : "Login to see every order and its latest delivery status.";
+      }
+      function renderMyOrders(){
+        const listEl = $("#myOrdersList");
+        if (!currentUser) { listEl.innerHTML = '<p style="color:var(--muted)">Login to see your orders, or use the order lookup above.</p>'; return; }
+        if (!myOrdersCache.length) { listEl.innerHTML = '<div class="empty"><strong>You have no orders yet</strong>Your orders will appear here after checkout.<br><a class="btn btn-brand btn-sm" href="#shop" style="margin-top:1rem">See products</a></div>'; return; }
+        listEl.innerHTML = "";
+        myOrdersCache.forEach(function(o){
+          const card = document.createElement("div");
+          card.className = "order-card";
+          card.setAttribute("data-open-order", o._id || "");
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-label", "Open order " + (o.orderNumber || "details"));
+          card.innerHTML = orderCardHtml(o, true);
+          function open(){ openOrderDetail(o); }
+          card.addEventListener("click", function(e){ if (!e.target.closest("button,a")) open(); });
+          card.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+          if (o.status === "delivered" && o.productId) {
+            const b = document.createElement("button");
+            b.type = "button"; b.className = "btn btn-gold btn-sm"; b.style.marginTop = ".7rem"; b.textContent = "Write a review";
+            b.addEventListener("click", function(e){
+              e.stopPropagation();
+              const p = catalog.find(function(x){ return (x._fsId || x.id) === o.productId; });
+              if (p) openDetail(p); else toast("This product is not in the shop now.");
+            });
+            card.appendChild(b);
+          }
+          listEl.appendChild(card);
+        });
+      }
       function subscribeMyOrders(){
-        if (myOrdersUnsub) { myOrdersUnsub(); myOrdersUnsub=null; }
+        if (myOrdersUnsub) { myOrdersUnsub(); myOrdersUnsub = null; }
+        updateOrdersAccessUi();
         const listEl = $("#myOrdersList");
         myOrdersCache = [];
-        if (!currentUser || !fbDb) { updateReviewFormVisibility(); listEl.innerHTML = '<p style="color:var(--muted)">Login to see your orders. Or use the track box above — no login needed.</p>'; return; }
+        if (!currentUser || !fbDb) { if (orderDetailOverlay.classList.contains("open")) closeOrderDetail(); updateReviewFormVisibility(); renderMyOrders(); return; }
         listEl.innerHTML = '<p style="color:var(--muted)">Loading your orders…</p>';
-        myOrdersUnsub = fbDb.collection("wp_orders").where("userId","==",currentUser.uid).orderBy("createdAt","desc").onSnapshot(function(snap){
-          myOrdersCache = [];
-          snap.forEach(function(doc){ myOrdersCache.push(Object.assign({ _id: doc.id }, doc.data())); });
+        const sourceMaps = { uid:new Map(), email:new Map() };
+        const ready = { uid:false, email:!currentUser.email };
+        const unsubs = [];
+        function mergeAndRender(){
+          const merged = new Map();
+          sourceMaps.uid.forEach(function(v,k){ merged.set(k,v); });
+          sourceMaps.email.forEach(function(v,k){ merged.set(k,v); });
+          myOrdersCache = Array.from(merged.values()).sort(function(a,b){ return orderTime(b.createdAt) - orderTime(a.createdAt); });
           updateReviewFormVisibility();
-          if (!myOrdersCache.length) { listEl.innerHTML = '<div class="empty"><strong>You have no orders yet</strong>When you order, you can see your order status and tracking number here.<br><a class="btn btn-brand btn-sm" href="#shop" style="margin-top:1rem">See products</a></div>'; return; }
-          listEl.innerHTML = "";
-          myOrdersCache.forEach(function(o){
-            const card = document.createElement("div"); card.className="order-card";
-            card.innerHTML = orderCardHtml(o);
-            if (o.status === "delivered" && o.productId) {
-              const b = document.createElement("button");
-              b.type = "button"; b.className = "btn btn-gold btn-sm"; b.style.marginTop = ".7rem"; b.textContent = "Write a review";
-              b.addEventListener("click", function(){
-                const p = catalog.find(function(x){ return (x._fsId || x.id) === o.productId; });
-                if (p) openDetail(p); else toast("This product is not in the shop now.");
-              });
-              card.appendChild(b);
-            }
-            listEl.appendChild(card);
+          if (!ready.uid || !ready.email) return;
+          renderMyOrders();
+          if (openOrderDetailId) {
+            const openOrder = myOrdersCache.find(function(o){ return o._id === openOrderDetailId; });
+            if (openOrder) renderOrderDetail(openOrder); else closeOrderDetail();
+          }
+        }
+        function watch(key, query){
+          let first = true;
+          const unsub = query.onSnapshot(function(snap){
+            const next = new Map();
+            snap.forEach(function(doc){ next.set(doc.id, Object.assign({ _id:doc.id }, doc.data())); });
+            sourceMaps[key] = next;
+            ready[key] = true;
+            first = false;
+            mergeAndRender();
+          }, function(err){
+            console.warn("My orders " + key, err);
+            ready[key] = true;
+            if (first && ready.uid && ready.email && !sourceMaps.uid.size && !sourceMaps.email.size) listEl.innerHTML = '<p style="color:var(--muted)">'+escapeHtml(friendlyErr(err))+'</p>';
+            else mergeAndRender();
           });
-        }, function(err){ listEl.innerHTML = '<p style="color:var(--muted)">'+escapeHtml(friendlyErr(err))+'</p>'; });
+          unsubs.push(unsub);
+        }
+        watch("uid", fbDb.collection("wp_orders").where("userId", "==", currentUser.uid));
+        if (currentUser.email) watch("email", fbDb.collection("wp_orders").where("email", "==", currentUser.email));
+        myOrdersUnsub = function(){ unsubs.forEach(function(unsub){ try { unsub(); } catch(e){} }); };
       }
 
       /* ---------------- Order lookup (no login) ---------------- */
