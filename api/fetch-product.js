@@ -335,6 +335,13 @@ export default async function handler(req, res) {
       return res.status(422).json({ ok: false, error: "This product is not available right now. Try another link." });
     }
 
+    // Content gate: never import adult/sexual-wellness products.
+    const ADULT_RE = /condom|vibrator|dildo|sex\s?toy|lube\b|lubricant|viagra|cialis|penis|vagina|erotic|porn|escort|massage\s?oil.*(sensual|arousal)|breast\s?pump|penis\s?pump/i;
+    const checkText = `${data.name || ""} ${data.category || ""}`;
+    if (ADULT_RE.test(checkText)) {
+      return res.status(422).json({ ok: false, error: "This type of product is not allowed in this shop." });
+    }
+
     const darazPrice = data.price;
     // +20% profit, then charm pricing (round UP to nearest ending in 49 or 99)
     const price = darazPrice ? charmPrice(darazPrice * 1.2) : null;
