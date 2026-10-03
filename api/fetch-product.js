@@ -115,6 +115,7 @@ function extractProduct(html) {
     brand = null;
   const images = []; // default gallery
   const variants = []; // [{ name, image, images[] }] — in-stock only
+  let defaultOperation = { disable: false, text: "Add to Cart" };
 
   const mod = extractModuleData(html);
   if (mod) {
@@ -127,6 +128,11 @@ function extractProduct(html) {
         if (it && it.type === "img") pushUnique(images, it.src || it.poster);
       }
     }
+    // Product-level availability from default SKU
+    try {
+      const d0op = (fields.skuInfos && fields.skuInfos["0"] && fields.skuInfos["0"].operation) || {};
+      defaultOperation = { disable: !!d0op.disable, text: String(d0op.text || "") };
+    } catch (_) {}
 
     // Variants: skuBase properties x skus propPath x skuInfos stock flag
     try {
@@ -211,7 +217,7 @@ function extractProduct(html) {
   if (!name) name = metaContent(html, "property", "og:title");
   if (images.length === 0) pushUnique(images, metaContent(html, "property", "og:image"));
 
-  return { name, brand, images, variants, category: cleanText(category), price };
+  return { name, brand, images, variants, category: cleanText(category), price, defaultOperation };
 }
 
 export default async function handler(req, res) {
@@ -240,12 +246,23 @@ export default async function handler(req, res) {
           variants: full.variants.length ? full.variants : data.variants,
           category: full.category || data.category,
           price: full.price || data.price,
+          defaultOperation: full.defaultOperation || data.defaultOperation,
         };
       }
     }
 
     if (!data.name) {
       return res.status(422).json({ ok: false, error: "Could not read this link. Check the link and try again." });
+    }
+
+    // Availability gate: only import products that are actually buyable right now.
+    const op = data.defaultOperation || {};
+    const buyableText = /add to cart/i.test(op.text || "");
+    if (op.disable || (op.text && !buyableText)) {
+      return res.status(422).json({ ok: false, error: "This product is not available right now. Try another link." });
+    }
+    if (data.variants.length === 0 && data.images.length === 0) {
+      return res.status(422).json({ ok: false, error: "This product is not available right now. Try another link." });
     }
 
     const darazPrice = data.price;
