@@ -114,7 +114,9 @@ function extractProduct(html) {
     category = null,
     brand = null;
   const images = []; // default gallery
-  const variants = []; // [{ name, image, images[] }] — in-stock only
+  const variants = []; // [{ name, image, images[] }] — in-stock only (color-like property)
+  const sizes = []; // [{ name }] — in-stock only (size-like properties)
+  let sizeChartURL = null;
   let defaultOperation = { disable: false, text: "Add to Cart" };
 
   const mod = extractModuleData(html);
@@ -134,7 +136,14 @@ function extractProduct(html) {
       defaultOperation = { disable: !!d0op.disable, text: String(d0op.text || "") };
     } catch (_) {}
 
-    // Variants: skuBase properties x skus propPath x skuInfos stock flag
+    // Size chart link
+    try {
+      const po = fields.productOption || {};
+      if (po.sizeChartURL) sizeChartURL = po.sizeChartURL;
+      else if (po.sizeChart && po.sizeChart.jumpUrl) sizeChartURL = po.sizeChart.jumpUrl;
+    } catch (_) {}
+
+    // Variants + sizes: skuBase properties x skus propPath x skuInfos stock flag
     try {
       const skuBase = fields.productOption && fields.productOption.skuBase;
       const skuInfos = fields.skuInfos || {};
@@ -149,39 +158,52 @@ function extractProduct(html) {
           const op = info.operation || {};
           return !op.disable;
         };
-        // Use the first property with multiple values (usually "Color Family")
-        const prop = skuBase.properties.find(
-          (p) => Array.isArray(p.values) && p.values.length > 1
-        );
-        if (prop) {
-          for (const v of prop.values) {
-            const vname = cleanText(v.name || "");
-            if (!vname || vname.length < 2) continue;
-            const needle = `${prop.pid}:${v.vid}`;
-            let skuIds = [];
-            for (const [pp, ids] of Object.entries(combo2skus)) {
-              if (pp.split(";").includes(needle)) skuIds = skuIds.concat(ids);
-            }
-            if (skuIds.length === 0) continue;
-            const live = skuIds.filter(skuInStock);
-            if (live.length === 0) continue; // out of stock -> skip this color
-            const vimgs = [];
-            pushUnique(vimgs, v.image || v.hoverImage);
-            for (const sid of live.slice(0, 4)) {
-              const gal = (sg && sg[sid]) || [];
-              for (const it of gal) {
-                if (it && it.type === "img") pushUnique(vimgs, it.src || it.poster);
+        const skusFor = (pid, vid) => {
+          const needle = `${pid}:${vid}`;
+          let out = [];
+          for (const [pp, ids] of Object.entries(combo2skus)) {
+            if (pp.split(";").includes(needle)) out = out.concat(ids);
+          }
+          return out;
+        };
+        for (const prop of skuBase.properties) {
+          if (!Array.isArray(prop.values) || prop.values.length < 2) continue;
+          const pname = String(prop.name || "").toLowerCase();
+          const isSizeProp = /size/.test(pname);
+          const hasImages = prop.values.some((v) => v.image || v.hoverImage);
+          // Color-like property (has images, not size) -> variants
+          if (hasImages && !isSizeProp && variants.length === 0) {
+            for (const v of prop.values) {
+              const vname = cleanText(v.name || "");
+              if (!vname || vname.length < 2) continue;
+              const live = skusFor(prop.pid, v.vid).filter(skuInStock);
+              if (live.length === 0) continue; // out of stock -> skip
+              const vimgs = [];
+              pushUnique(vimgs, v.image || v.hoverImage);
+              for (const sid of live.slice(0, 4)) {
+                const gal = (sg && sg[sid]) || [];
+                for (const it of gal) {
+                  if (it && it.type === "img") pushUnique(vimgs, it.src || it.poster);
+                  if (vimgs.length >= 8) break;
+                }
                 if (vimgs.length >= 8) break;
               }
-              if (vimgs.length >= 8) break;
+              for (const u of vimgs) pushUnique(images, u);
+              variants.push({
+                name: vname.length > 24 ? vname.slice(0, 24) : vname,
+                image: vimgs[0] || "",
+                images: vimgs,
+              });
             }
-            // also show in flat list
-            for (const u of vimgs) pushUnique(images, u);
-            variants.push({
-              name: vname.length > 24 ? vname.slice(0, 24) : vname,
-              image: vimgs[0] || "",
-              images: vimgs,
-            });
+          } else if (isSizeProp) {
+            // Size-like property -> sizes list (in-stock only)
+            for (const v of prop.values) {
+              const vname = cleanText(v.name || "");
+              if (!vname) continue;
+              const live = skusFor(prop.pid, v.vid).filter(skuInStock);
+              if (live.length === 0) continue; // out of stock -> skip
+              if (!sizes.find((s) => s.name === vname)) sizes.push({ name: vname });
+            }
           }
         }
       }
@@ -217,7 +239,7 @@ function extractProduct(html) {
   if (!name) name = metaContent(html, "property", "og:title");
   if (images.length === 0) pushUnique(images, metaContent(html, "property", "og:image"));
 
-  return { name, brand, images, variants, category: cleanText(category), price, defaultOperation };
+  return { name, brand, images, variants, sizes, sizeChartURL, category: cleanText(category), price, defaultOperation };
 }
 
 export default async function handler(req, res) {
@@ -244,6 +266,8 @@ export default async function handler(req, res) {
           brand: full.brand || data.brand,
           images: full.images.length ? full.images : data.images,
           variants: full.variants.length ? full.variants : data.variants,
+          sizes: full.sizes.length ? full.sizes : data.sizes,
+          sizeChartURL: full.sizeChartURL || data.sizeChartURL,
           category: full.category || data.category,
           price: full.price || data.price,
           defaultOperation: full.defaultOperation || data.defaultOperation,
@@ -270,6 +294,16 @@ export default async function handler(req, res) {
     const category = mapCategory(data.category);
     const freshName = freshenName(data.name, data.brand);
 
+    // Size chart image (best effort)
+    let sizeChartImage = null;
+    if (data.sizeChartURL) {
+      try {
+        const scHtml = await getText(data.sizeChartURL);
+        const im = scHtml.match(/"imageUrl"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+        if (im) sizeChartImage = im[1].replace(/\\\//g, "/");
+      } catch (_) {}
+    }
+
     return res.status(200).json({
       ok: true,
       name: freshName,
@@ -278,6 +312,9 @@ export default async function handler(req, res) {
       images: data.images.slice(0, 20),
       variants: data.variants.slice(0, 20),
       variantLabel: data.variants.length ? "Color" : "",
+      sizes: data.sizes.slice(0, 20),
+      sizeLabel: data.sizes.length ? "Size" : "",
+      sizeChartImage,
       category,
       suggestedDescription: suggestDescription(freshName),
       needsPrice: !darazPrice,
