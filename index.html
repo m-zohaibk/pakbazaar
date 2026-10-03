@@ -44,8 +44,8 @@
         }
       }
       *{box-sizing:border-box}
-      html{scroll-behavior:smooth}
-      body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+      html{scroll-behavior:smooth;overflow-x:clip}
+      body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip;max-width:100%}
       ::selection{background:var(--gold);color:var(--gold-ink)}
       h1,h2,h3{font-family:var(--font-display);line-height:1.12;margin:0;font-weight:700;letter-spacing:-.01em}
       p{margin:0} a{color:var(--brand)} img{display:block;max-width:100%}
@@ -66,7 +66,22 @@
       .nav a.active{background:var(--brand-soft);color:var(--brand)}
       .auth-area{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
       .user-chip{font-weight:700;font-size:.85rem;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--surface);border:1px solid var(--line);padding:.42rem .7rem;border-radius:var(--r-full)}
-      @media(max-width:900px){.nav{display:none}.brand small{display:none}}
+      .header-actions{display:none;align-items:center;gap:.45rem;margin-left:auto}
+      .menu-btn,.cart-btn{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none;text-decoration:none}
+      .menu-btn:active,.cart-btn:active{background:var(--brand-soft);color:var(--brand)}
+      @media(max-width:900px){.nav{display:none}.brand small{display:none}.header-actions{display:flex}}
+      /* slide-in drawer */
+      .drawer-backdrop{position:fixed;inset:0;background:rgba(4,26,17,.55);backdrop-filter:blur(3px);z-index:95;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+      .drawer-backdrop.open{opacity:1;pointer-events:auto}
+      .drawer{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);background:var(--bg);z-index:96;transform:translateX(-105%);transition:transform .32s var(--ease);display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow-y:auto}
+      .drawer.open{transform:none}
+      .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;border-bottom:1px solid var(--line)}
+      .drawer-nav{padding:.8rem;display:grid;gap:.2rem}
+      .drawer-link{display:flex;align-items:center;gap:.7rem;padding:.72rem .8rem;border-radius:12px;color:var(--ink);text-decoration:none;font-weight:700;font-size:.96rem;min-height:48px;background:none;border:0;width:100%;text-align:left;cursor:pointer;font-family:var(--font-body)}
+      .drawer-link:hover,.drawer-link.active{background:var(--brand-soft);color:var(--brand)}
+      .drawer-sep{height:1px;background:var(--line);margin:.6rem 1.1rem}
+      .drawer-auth{padding:0 1.1rem 1.2rem;display:grid;gap:.6rem}
+      .drawer .user-chip{max-width:100%}
       /* buttons */
       .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;cursor:pointer;text-decoration:none;font:700 .96rem var(--font-body);padding:.82rem 1.45rem;border-radius:13px;min-height:48px;transition:transform .16s var(--ease),background .2s,box-shadow .2s,border-color .2s;box-shadow:var(--shadow-sm)}
       .btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(1px) scale(.985)}
@@ -237,20 +252,20 @@
       /* toast */
       .toast{position:fixed;left:50%;bottom:5.6rem;transform:translate(-50%,1rem);background:var(--brand-deep);color:#eaf5ec;padding:.78rem 1.3rem;border-radius:var(--r-full);font-weight:700;font-size:.9rem;opacity:0;pointer-events:none;z-index:130;transition:opacity .25s var(--ease),transform .25s var(--ease);max-width:calc(100% - 2rem);text-align:center;box-shadow:var(--shadow-lg);border:1px solid rgba(242,201,76,.35)}
       .toast.show{opacity:1;transform:translate(-50%,0)}
-      @media(min-width:761px){.toast{bottom:1.4rem}}
+      @media(min-width:901px){.toast{bottom:1.4rem}}
       /* auth / orders / admin */
       .orders-list{display:grid;gap:1rem}
       .order-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.2rem 1.25rem;box-shadow:var(--shadow-sm)}
       .order-card .meta{color:var(--muted);font-size:.88rem;margin-top:.3rem}
       .status-pill{display:inline-block;padding:.28rem .7rem;border-radius:var(--r-full);font-weight:800;font-size:.76rem;background:var(--gold-soft);color:var(--gold-ink);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
       .timeline{display:flex;list-style:none;margin:1rem 0 .2rem;padding:0;gap:0}
-      .timeline li{flex:1;text-align:center;position:relative;font-size:.68rem;font-weight:700;color:var(--faint);padding-top:1.35rem;line-height:1.25}
+      .timeline li{flex:1;text-align:center;position:relative;font-size:12px;font-weight:700;color:var(--faint);padding-top:1.35rem;line-height:1.3;min-width:0;overflow-wrap:break-word}
       .timeline li::before{content:"";position:absolute;top:.28rem;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:var(--surface);border:2.5px solid var(--line-strong);z-index:1}
       .timeline li::after{content:"";position:absolute;top:.62rem;left:calc(-50% + 9px);right:calc(50% + 9px);height:2.5px;background:var(--line)}
       .timeline li:first-child::after{display:none}
       .timeline li.done{color:var(--brand)} .timeline li.done::before{background:var(--brand);border-color:var(--brand)} .timeline li.done::after{background:var(--brand)}
       .timeline li.now{color:var(--gold-strong)} .timeline li.now::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 5px var(--gold-soft)}
-      @media(max-width:520px){.timeline li{font-size:.58rem}}
+      @media(max-width:520px){.timeline li{font-size:12px}}
       .admin-table{display:grid;gap:1rem}
       .admin-row{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.15rem;display:grid;gap:.7rem;box-shadow:var(--shadow-sm)}
       .admin-row .rowline{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.94rem}
@@ -264,9 +279,25 @@
       .auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--line)}
       .hidden{display:none!important}
       /* announcement bar */
-      .announce{background:var(--brand-deep);color:#eaf5ec;text-align:center;font-size:.8rem;font-weight:600;padding:.5rem 2.6rem .5rem 1rem;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .announce{background:var(--brand-deep);color:#eaf5ec;text-align:center;font-size:.8rem;font-weight:600;padding:.5rem 2.6rem .5rem 1rem;position:relative;overflow:hidden}
       .announce strong{color:#f2c94c}
-      .announce button{position:absolute;right:.4rem;top:50%;transform:translateY(-50%);background:none;border:0;color:#eaf5ec;font-size:1.05rem;cursor:pointer;width:44px;height:44px;border-radius:10px}
+      .announce button{position:absolute;right:.4rem;top:50%;transform:translateY(-50%);background:none;border:0;color:#eaf5ec;font-size:1.05rem;cursor:pointer;width:44px;height:44px;border-radius:10px;z-index:2;background:var(--brand-deep)}
+      .announce-track{display:inline-block}
+      .announce-msg{display:inline-block}
+      .announce-msg[aria-hidden="true"]{display:none}
+      @media(max-width:640px){
+        .announce{text-align:left;white-space:normal}
+        .announce-track{display:inline-flex;width:max-content;max-width:none;animation:announceTicker 16s linear infinite;will-change:transform}
+        .announce-msg{display:inline-block;white-space:nowrap;padding-right:3rem}
+        .announce-msg[aria-hidden="true"]{display:inline-block}
+      }
+      @keyframes announceTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+      @media(prefers-reduced-motion:reduce){
+        .announce-track{animation:none!important;display:block;width:auto}
+        .announce-msg{white-space:normal;padding-right:0}
+        .announce-msg[aria-hidden="true"]{display:none!important}
+        .announce{overflow:visible}
+      }
       /* search suggestions */
       .search-wrap{position:relative;flex:1 1 280px}
       .suggest{position:absolute;left:0;right:0;top:calc(100% + .45rem);background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;z-index:40;display:none;max-height:60dvh;overflow-y:auto}
@@ -429,12 +460,16 @@
       .admin-sk{display:grid;gap:1rem}
       @media(min-width:1180px){.topbar-in{flex-wrap:nowrap}.nav{flex-wrap:nowrap}.nav a{padding:.5rem .55rem;font-size:.86rem}.brand{white-space:nowrap}.auth-area{flex-wrap:nowrap}}
       @media(min-width:900px) and (max-width:1179px){.nav{gap:.1rem}.nav a{padding:.5rem .4rem;font-size:.82rem}}
-      @media(max-width:480px){.announce{font-size:.7rem}}
+      @media(max-width:480px){.announce{font-size:.78rem}}
       @media(max-width:640px){
-        .topbar-in{flex-wrap:nowrap;padding:.5rem 0}
-        #topWaBtn{font-size:0;padding:.62rem .7rem;gap:0}
-        #topWaBtn svg{width:20px;height:20px}
-        .auth-area{flex-wrap:nowrap}
+        .topbar-in{flex-wrap:nowrap;padding:.5rem 0;gap:.5rem}
+        .brand{gap:.45rem;margin-right:0;min-width:0}
+        .brand-mark{width:32px;height:32px;border-radius:9px;font-size:1.05rem}
+        .brand-name{font-size:1.12rem;white-space:nowrap}
+        .auth-area{display:none!important}
+        #topWaBtn{display:none!important}
+        .header-actions{margin-left:auto}
+        .cart-btn{display:grid}
         .hero-in{padding:.85rem 0 .95rem}
         .hero h1{font-size:1.42rem}
         .sec-head{margin-bottom:1.1rem}
@@ -442,9 +477,12 @@
         .search-wrap{flex:1 1 180px}
         .price-filter{flex:0 1 auto;max-width:46%}
       }
+      @media(min-width:641px){
+        .cart-btn{display:none}
+      }
       /* bottom nav */
       .bottom-nav{display:none}
-      @media(max-width:760px){
+      @media(max-width:900px){
         body{padding-bottom:74px}
         .bottom-nav{display:flex;position:fixed;left:.7rem;right:.7rem;bottom:.7rem;z-index:70;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);padding:.4rem;justify-content:space-around}
         .bottom-nav a,.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;background:none;border:0;cursor:pointer;color:var(--muted);text-decoration:none;font:700 .68rem var(--font-body);padding:.5rem .2rem;border-radius:14px;min-height:52px;justify-content:center}
@@ -460,7 +498,7 @@
   </head>
   <body id="top">
     <div class="announce" id="announceBar">
-      Pay first · <strong>Easypaisa / JazzCash</strong> · <strong>7-day check guarantee</strong>
+      <span class="announce-track"><span class="announce-msg">Pay first · <strong>Easypaisa / JazzCash</strong> · <strong>7-day check guarantee</strong></span><span class="announce-msg" aria-hidden="true">Pay first · <strong>Easypaisa / JazzCash</strong> · <strong>7-day check guarantee</strong></span></span>
       <button type="button" id="announceClose" aria-label="Close announcement">✕</button>
     </div>
     <header class="topbar">
@@ -487,8 +525,44 @@
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.3.6.4 0 .1 0 .7-.2 1.2Z"/></svg>
           WhatsApp us
         </a>
+        <div class="header-actions">
+          <a class="cart-btn" href="#shop" aria-label="Shop">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16l-1.2 12.2a1 1 0 0 1-1 .8H6.2a1 1 0 0 1-1-.8L4 7Z"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/></svg>
+          </a>
+          <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
       </div>
     </header>
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top" style="margin:0"><span class="brand-mark" style="width:34px;height:34px;font-size:1.1rem">P</span><span><span class="brand-name" style="font-size:1.15rem">Pak<em>Bazaar</em></span></span></a>
+        <button class="icon-btn" id="drawerClose" type="button" aria-label="Close menu">✕</button>
+      </div>
+      <nav class="drawer-nav" aria-label="Menu links">
+        <a class="drawer-link" href="#home" data-nav="home">Home</a>
+        <a class="drawer-link" href="#shop">Shop</a>
+        <a class="drawer-link" href="#wishlist" data-nav="wishlist">Wishlist</a>
+        <a class="drawer-link" href="#my-orders" data-nav="my-orders">Orders</a>
+        <a class="drawer-link" href="#about" data-nav="about">About Us</a>
+        <a class="drawer-link" href="#how" data-nav="how">How to Order</a>
+        <a class="drawer-link" href="#guarantee" data-nav="guarantee">Payment &amp; Guarantee</a>
+        <a class="drawer-link" href="#faq" data-nav="faq">FAQ</a>
+        <a class="drawer-link" href="#contact" data-nav="contact">Contact</a>
+        <button class="drawer-link" id="drawerAccount" type="button">Account</button>
+        <a class="drawer-link hidden" id="drawerAdminLink" href="#admin" data-nav="admin">Admin Panel</a>
+      </nav>
+      <div class="drawer-sep"></div>
+      <div class="drawer-auth">
+        <span class="user-chip hidden" id="drawerUserChip"></span>
+        <button class="btn btn-ghost btn-block" id="drawerLoginBtn" type="button">Login</button>
+        <button class="btn btn-brand btn-block" id="drawerSignupBtn" type="button">Sign up</button>
+        <button class="btn btn-ghost btn-block hidden" id="drawerLogoutBtn" type="button">Logout</button>
+        <a class="btn btn-wa btn-block" id="drawerWaBtn" href="#" target="_blank" rel="noopener">WhatsApp us</a>
+      </div>
+    </aside>
 
     <div class="hero">
       <div class="wrap hero-in">
@@ -2168,7 +2242,7 @@
       }
       function refreshWaLinks() {
         const link = waLink("Assalam-o-Alaikum! I have a question about a product on PakBazaar.");
-        ["topWaBtn", "footWaBtn", "contactWaBtn", "ownerWaBtn"].forEach(function (id) {
+        ["topWaBtn", "footWaBtn", "contactWaBtn", "ownerWaBtn", "drawerWaBtn"].forEach(function (id) {
           const el = document.getElementById(id);
           if (el) el.href = link;
         });
@@ -2395,6 +2469,12 @@
         $("#myOrdersLink").classList.toggle("hidden", !logged);
         $("#adminLink").classList.toggle("hidden", !(logged && isAdmin));
         if (logged) $("#userChip").textContent = currentUser.displayName || currentUser.email || "";
+        const dLogin = $("#drawerLoginBtn"), dSignup = $("#drawerSignupBtn"), dLogout = $("#drawerLogoutBtn"), dChip = $("#drawerUserChip"), dAdmin = $("#drawerAdminLink");
+        if (dLogin) dLogin.classList.toggle("hidden", logged);
+        if (dSignup) dSignup.classList.toggle("hidden", logged);
+        if (dLogout) dLogout.classList.toggle("hidden", !logged);
+        if (dChip) { dChip.classList.toggle("hidden", !logged); if (logged) dChip.textContent = currentUser.displayName || currentUser.email || ""; }
+        if (dAdmin) dAdmin.classList.toggle("hidden", !(logged && isAdmin));
         if (logged) {
           const n = $("#fName"); if (n && !n.value && currentUser.displayName) n.value = currentUser.displayName;
         }
@@ -2855,6 +2935,21 @@
 
       const bottomAccount = $("#bottomAccount");
       if (bottomAccount) bottomAccount.addEventListener("click", function(){ if (currentUser) { location.hash = "my-orders"; } else { openAuth("login"); } });
+      /* slide-in drawer */
+      const drawer = $("#drawer"), drawerBackdrop = $("#drawerBackdrop"), menuBtn = $("#menuBtn");
+      function openDrawer(){ if(!drawer) return; drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false"); if(drawerBackdrop) drawerBackdrop.classList.add("open"); if(menuBtn) menuBtn.setAttribute("aria-expanded","true"); document.body.style.overflow = "hidden"; }
+      function closeDrawer(){ if(!drawer) return; drawer.classList.remove("open"); drawer.setAttribute("aria-hidden","true"); if(drawerBackdrop) drawerBackdrop.classList.remove("open"); if(menuBtn) menuBtn.setAttribute("aria-expanded","false"); if(!overlay.classList.contains("open") && !authOverlay.classList.contains("open") && !pdOverlay.classList.contains("open")) document.body.style.overflow = ""; }
+      if (menuBtn) menuBtn.addEventListener("click", openDrawer);
+      const drawerClose = $("#drawerClose"); if (drawerClose) drawerClose.addEventListener("click", closeDrawer);
+      if (drawerBackdrop) drawerBackdrop.addEventListener("click", closeDrawer);
+      document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeDrawer(); });
+      $$(".drawer-link").forEach(function(a){ a.addEventListener("click", closeDrawer); });
+      const dLogin = $("#drawerLoginBtn"), dSignup = $("#drawerSignupBtn"), dLogout = $("#drawerLogoutBtn"), dAccount = $("#drawerAccount");
+      if (dLogin) dLogin.addEventListener("click", function(){ closeDrawer(); openAuth("login"); });
+      if (dSignup) dSignup.addEventListener("click", function(){ closeDrawer(); openAuth("signup"); });
+      if (dLogout) dLogout.addEventListener("click", function(){ closeDrawer(); if(fbAuth) fbAuth.signOut(); });
+      if (dAccount) dAccount.addEventListener("click", function(){ closeDrawer(); if (currentUser) { location.hash = "my-orders"; } else { openAuth("login"); } });
+      const drawerWa = $("#drawerWaBtn"); if (drawerWa) drawerWa.addEventListener("click", closeDrawer);
       /* section entrance */
       try {
         const io = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: 0.08 });
