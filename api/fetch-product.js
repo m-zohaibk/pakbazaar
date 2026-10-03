@@ -1,5 +1,5 @@
 // Vercel Serverless Function: fetch product details from a supplier link.
-// Admin-only helper: paste a product link -> returns { name, darazPrice, price (+20%), images[], variants[], category }.
+// Admin-only helper: paste a product link -> product data with variants, images, +20% price.
 // Usage: GET /api/fetch-product?url=<encoded product URL>
 
 const UA =
@@ -79,20 +79,48 @@ function extractModuleData(html) {
   }
 }
 
+function titleCase(s) {
+  return s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
+// Freshen the title so it reads as our own original listing.
+function freshenName(name, brand) {
+  let n = cleanText(name);
+  if (brand) {
+    const b = String(brand.name || brand).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (b.length > 1) n = n.replace(new RegExp(b, "gi"), "");
+  }
+  // Drop supplier filler words
+  n = n.replace(/\b(hot\s*sale|new\s*arrival|wholesale|dropship\w*)\b/gi, "");
+  // Normalize ALL-CAPS shouting to Title Case (keep short codes like "4K" as-is)
+  n = n
+    .split(" ")
+    .map((w) => (/^[A-Z]{4,}$/.test(w) ? titleCase(w) : w))
+    .join(" ");
+  n = n.replace(/\s{2,}/g, " ").replace(/\s*-\s*/g, " - ").replace(/^[-\s]+|[-\s]+$/g, "").trim();
+  return n;
+}
+
+function suggestDescription(name) {
+  const short = (name || "product").split(",")[0].trim();
+  return (
+    `Good quality ${short.toLowerCase()}. Checked before packing. ` +
+    `Pay with Easypaisa or JazzCash. 7-day check guarantee.`
+  );
+}
+
 function extractProduct(html) {
   let name = null,
-    category = null;
-  const images = []; // ordered: default gallery first, then variants
-  const variants = []; // [{ label, image }]
+    category = null,
+    brand = null;
+  const images = []; // default gallery
+  const variants = []; // [{ name, image, images[] }] — in-stock only
 
-  // 1) __moduleData__: skuGalleries (per-SKU galleries) + productOption (color variants)
   const mod = extractModuleData(html);
   if (mod) {
-    const fields =
-      (mod.data && mod.data.root && mod.data.root.fields) || {};
+    const fields = (mod.data && mod.data.root && mod.data.root.fields) || {};
 
-    // Default gallery: skuGalleries["0"], type=img items.
-    // Then one representative image per color/size variant (not every SKU gallery).
+    // Default gallery
     const sg = fields.skuGalleries;
     if (sg && typeof sg === "object" && Array.isArray(sg["0"])) {
       for (const it of sg["0"]) {
@@ -100,20 +128,61 @@ function extractProduct(html) {
       }
     }
 
-    // Color/size variants with their own images (keep readable labels only)
-    const po = fields.productOption;
-    if (po && Array.isArray(po.options)) {
-      for (const o of po.options) {
-        if (o && o.image) {
-          pushUnique(images, o.image);
-          const label = String(o.path || "").split(":").pop().trim();
-          if (label && /[a-zA-Z]{2,}/.test(label)) variants.push({ label, image: o.image });
+    // Variants: skuBase properties x skus propPath x skuInfos stock flag
+    try {
+      const skuBase = fields.productOption && fields.productOption.skuBase;
+      const skuInfos = fields.skuInfos || {};
+      if (skuBase && Array.isArray(skuBase.properties) && Array.isArray(skuBase.skus)) {
+        const combo2skus = {};
+        for (const s of skuBase.skus) {
+          if (!s.propPath || !s.skuId) continue;
+          (combo2skus[s.propPath] = combo2skus[s.propPath] || []).push(String(s.skuId));
+        }
+        const skuInStock = (id) => {
+          const info = skuInfos[String(id)] || {};
+          const op = info.operation || {};
+          return !op.disable;
+        };
+        // Use the first property with multiple values (usually "Color Family")
+        const prop = skuBase.properties.find(
+          (p) => Array.isArray(p.values) && p.values.length > 1
+        );
+        if (prop) {
+          for (const v of prop.values) {
+            const vname = cleanText(v.name || "");
+            if (!vname || vname.length < 2) continue;
+            const needle = `${prop.pid}:${v.vid}`;
+            let skuIds = [];
+            for (const [pp, ids] of Object.entries(combo2skus)) {
+              if (pp.split(";").includes(needle)) skuIds = skuIds.concat(ids);
+            }
+            if (skuIds.length === 0) continue;
+            const live = skuIds.filter(skuInStock);
+            if (live.length === 0) continue; // out of stock -> skip this color
+            const vimgs = [];
+            pushUnique(vimgs, v.image || v.hoverImage);
+            for (const sid of live.slice(0, 4)) {
+              const gal = (sg && sg[sid]) || [];
+              for (const it of gal) {
+                if (it && it.type === "img") pushUnique(vimgs, it.src || it.poster);
+                if (vimgs.length >= 8) break;
+              }
+              if (vimgs.length >= 8) break;
+            }
+            // also show in flat list
+            for (const u of vimgs) pushUnique(images, u);
+            variants.push({
+              name: vname.length > 24 ? vname.slice(0, 24) : vname,
+              image: vimgs[0] || "",
+              images: vimgs,
+            });
+          }
         }
       }
-    }
+    } catch (_) {}
   }
 
-  // 2) JSON-LD Product block (name, category, extra images)
+  // JSON-LD fallback (name, category, brand, extra images)
   const ldBlocks = [
     ...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gis),
   ];
@@ -125,6 +194,7 @@ function extractProduct(html) {
         if (it && it["@type"] === "Product") {
           name = name || it.name;
           category = category || it.category || null;
+          brand = brand || it.brand || null;
           const imgs = Array.isArray(it.image) ? it.image : it.image ? [it.image] : [];
           for (const im of imgs) pushUnique(images, im);
         }
@@ -132,43 +202,16 @@ function extractProduct(html) {
     } catch (_) {}
   }
 
-  // 3) Price from embedded pdt_price ("Rs. 1,299")
+  // Price
   let price = null;
   const pm = html.match(/pdt_price\\?":\\"([^"\\]+)/);
   if (pm) price = parsePrice(pm[1]);
 
-  // 4) Open Graph fallbacks
+  // OG fallbacks
   if (!name) name = metaContent(html, "property", "og:title");
   if (images.length === 0) pushUnique(images, metaContent(html, "property", "og:image"));
 
-  return {
-    name: cleanText(name),
-    images,
-    variants,
-    category: cleanText(category),
-    price,
-  };
-}
-
-// Lightly freshen the name so it reads as our own listing.
-function freshenName(name, brand) {
-  let n = cleanText(name);
-  if (brand) {
-    const b = brand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    n = n.replace(new RegExp(b, "gi"), "").replace(/\s{2,}/g, " ").trim();
-  }
-  // Tidy common filler
-  n = n.replace(/\s*-\s*$/g, "").trim();
-  return n;
-}
-
-// Short fresh description in simple English (not copied).
-function suggestDescription(name, category) {
-  const short = (name || "product").split(",")[0].trim();
-  return (
-    `Good quality ${short.toLowerCase()}. Checked before packing. ` +
-    `Pay with Easypaisa or JazzCash. 7-day check guarantee.`
-  );
+  return { name, brand, images, variants, category: cleanText(category), price };
 }
 
 export default async function handler(req, res) {
@@ -185,7 +228,6 @@ export default async function handler(req, res) {
     const html = await getText(rawUrl);
     let data = extractProduct(html);
 
-    // Short share links: follow to the real product page for full data.
     if ((data.images.length <= 1 || !data.price) && /s\.daraz\.pk/i.test(rawUrl)) {
       const origin = html.match(/<link rel="origin" href="([^"]+)"/i);
       if (origin && origin[1]) {
@@ -193,6 +235,7 @@ export default async function handler(req, res) {
         const full = extractProduct(productHtml);
         data = {
           name: full.name || data.name,
+          brand: full.brand || data.brand,
           images: full.images.length ? full.images : data.images,
           variants: full.variants.length ? full.variants : data.variants,
           category: full.category || data.category,
@@ -208,17 +251,18 @@ export default async function handler(req, res) {
     const darazPrice = data.price;
     const price = darazPrice ? Math.round(darazPrice * 1.2) : null;
     const category = mapCategory(data.category);
-    const freshName = freshenName(data.name);
+    const freshName = freshenName(data.name, data.brand);
 
     return res.status(200).json({
       ok: true,
       name: freshName,
       darazPrice,
-      price, // +20% profit, rounded
+      price,
       images: data.images.slice(0, 20),
       variants: data.variants.slice(0, 20),
+      variantLabel: data.variants.length ? "Color" : "",
       category,
-      suggestedDescription: suggestDescription(freshName, category),
+      suggestedDescription: suggestDescription(freshName),
       needsPrice: !darazPrice,
     });
   } catch (e) {
