@@ -101,12 +101,50 @@ function freshenName(name, brand) {
   return n;
 }
 
-function suggestDescription(name) {
+function stripHtml(s) {
+  return String(s || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+// Charm pricing: round UP to nearest price ending in 49 or 99 (never below margin).
+// 935 -> 949, 1087 -> 1099
+function charmPrice(n) {
+  let p = Math.ceil(n);
+  let guard = 0;
+  while (p % 100 !== 49 && p % 100 !== 99 && guard < 200) {
+    p++;
+    guard++;
+  }
+  return p;
+}
+
+// Product-relevant description. Never includes payment/shipping lines.
+function suggestDescription(name, variants, sizes, highlightsHtml) {
+  const h = stripHtml(highlightsHtml);
+  const lowName = (name || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+  const lowH = h.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+  // Use highlights if substantive and not just the title repeated
+  if (lowH.length > 60 && lowH !== lowName && !lowName.includes(lowH.slice(0, 40))) {
+    return h.slice(0, 400);
+  }
+  // Compose from real product facts
+  const parts = [];
   const short = (name || "product").split(",")[0].trim();
-  return (
-    `Good quality ${short.toLowerCase()}. Checked before packing. ` +
-    `Pay with Easypaisa or JazzCash. 7-day check guarantee.`
-  );
+  parts.push(short);
+  const facts = [];
+  if (variants && variants.length > 1) {
+    const cnames = variants.slice(0, 4).map((v) => v.name).join(", ");
+    facts.push(`${variants.length} colors (${cnames}${variants.length > 4 ? ", ..." : ""})`);
+  }
+  if (sizes && sizes.length > 0) {
+    facts.push(`sizes ${sizes.map((s) => s.name).join(", ")}`);
+  }
+  if (facts.length) parts.push("Available in " + facts.join(" and ") + ".");
+  return parts.join(" ").slice(0, 400);
 }
 
 function extractProduct(html) {
@@ -117,11 +155,18 @@ function extractProduct(html) {
   const variants = []; // [{ name, image, images[] }] — in-stock only (color-like property)
   const sizes = []; // [{ name }] — in-stock only (size-like properties)
   let sizeChartURL = null;
+  let highlightsHtml = null;
   let defaultOperation = { disable: false, text: "Add to Cart" };
 
   const mod = extractModuleData(html);
   if (mod) {
     const fields = (mod.data && mod.data.root && mod.data.root.fields) || {};
+
+    // Product highlights (for a relevant description)
+    try {
+      const ph = fields.product && fields.product.highlights;
+      if (ph) highlightsHtml = ph;
+    } catch (_) {}
 
     // Default gallery
     const sg = fields.skuGalleries;
@@ -239,7 +284,7 @@ function extractProduct(html) {
   if (!name) name = metaContent(html, "property", "og:title");
   if (images.length === 0) pushUnique(images, metaContent(html, "property", "og:image"));
 
-  return { name, brand, images, variants, sizes, sizeChartURL, category: cleanText(category), price, defaultOperation };
+  return { name, brand, images, variants, sizes, sizeChartURL, highlightsHtml, category: cleanText(category), price, defaultOperation };
 }
 
 export default async function handler(req, res) {
@@ -268,6 +313,7 @@ export default async function handler(req, res) {
           variants: full.variants.length ? full.variants : data.variants,
           sizes: full.sizes.length ? full.sizes : data.sizes,
           sizeChartURL: full.sizeChartURL || data.sizeChartURL,
+          highlightsHtml: full.highlightsHtml || data.highlightsHtml,
           category: full.category || data.category,
           price: full.price || data.price,
           defaultOperation: full.defaultOperation || data.defaultOperation,
@@ -290,7 +336,8 @@ export default async function handler(req, res) {
     }
 
     const darazPrice = data.price;
-    const price = darazPrice ? Math.round(darazPrice * 1.2) : null;
+    // +20% profit, then charm pricing (round UP to nearest ending in 49 or 99)
+    const price = darazPrice ? charmPrice(darazPrice * 1.2) : null;
     const category = mapCategory(data.category);
     const freshName = freshenName(data.name, data.brand);
 
@@ -316,7 +363,7 @@ export default async function handler(req, res) {
       sizeLabel: data.sizes.length ? "Size" : "",
       sizeChartImage,
       category,
-      suggestedDescription: suggestDescription(freshName),
+      suggestedDescription: suggestDescription(freshName, data.variants, data.sizes, data.highlightsHtml),
       needsPrice: !darazPrice,
     });
   } catch (e) {
