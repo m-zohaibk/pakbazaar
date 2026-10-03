@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <link rel="icon" href="data:," />
-    <title>PakBazaar</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIGRlc2MiPgogIDx0aXRsZSBpZD0idGl0bGUiPkFyZWVxIGVtYmxlbTwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkEgZ29sZCBnZW9tZXRyaWMgYXJhYmVzcXVlIG9uIGFuIGVtZXJhbGQgYmFkZ2U8L2Rlc2M+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTUiIGZpbGw9IiMwNjNmMmEiLz4KICA8cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iNTgiIGhlaWdodD0iNTgiIHJ4PSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDZiMzQ0IiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iLjc4Ii8+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjJjOTRjIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgIDxwYXRoIGQ9Ik0zMiA5YzcgOCA4LjUgMTUuMiAwIDIzLTguNS03LjgtNy0xNSAwLTIzWiIvPgogICAgPHBhdGggZD0iTTU1IDMyYy04IDctMTUuMiA4LjUtMjMgMCA3LjgtOC41IDE1LTcgMjMgMFoiLz4KICAgIDxwYXRoIGQ9Ik0zMiA1NWMtNy04LTguNS0xNS4yIDAtMjMgOC41IDcuOCA3IDE1IDAgMjNaIi8+CiAgICA8cGF0aCBkPSJNOSAzMmM4LTcgMTUuMi04LjUgMjMgMC03LjggOC41LTE1IDctMjMgMFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMyIDI0LjggMzkuMiAzMiAzMiAzOS4yIDI0LjggMzJaIiBmaWxsPSIjZDZiMzQ0Ii8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMi42IiBmaWxsPSIjMDYzZjJhIi8+Cjwvc3ZnPgo=" />
+    <title>Areeq</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Outfit:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -56,10 +56,14 @@
       .topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
       .topbar-in{display:flex;align-items:center;justify-content:space-between;gap:.9rem;padding:.65rem 0;flex-wrap:wrap}
       .brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);margin-right:.4rem}
-      .brand-mark{width:38px;height:38px;border-radius:11px;background:var(--brand-deep);color:#f2c94c;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:1.25rem;box-shadow:var(--shadow-sm)}
-      .brand-name{font-family:var(--font-display);font-size:1.35rem;font-weight:800;line-height:1}
-      .brand-name em{font-style:italic;color:var(--gold-strong)}
-      .brand small{display:block;font-family:var(--font-body);font-size:.64rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:.15rem}
+      .brand-mark{width:38px;height:38px;border-radius:11px;background:var(--brand-deep);display:block;object-fit:cover;box-shadow:var(--shadow-sm);flex:none}
+      .brand-lockup{display:flex;flex-direction:column;justify-content:center;min-width:0;line-height:1}
+      .brand-ar{font-family:"Aref Ruqaa",serif;font-size:1.3rem;font-weight:700;line-height:.9;color:var(--ink)}
+      .brand-en{font-family:var(--font-body);font-size:.55rem;font-weight:800;letter-spacing:.24em;color:var(--gold-strong);margin-top:.2rem;padding-left:.08em}
+      .footer-brand{display:inline-flex;margin:0 0 .75rem}
+      .footer-brand .brand-mark{width:44px;height:44px;border-radius:12px}
+      .footer-brand .brand-ar{font-size:1.52rem}
+      .footer-brand .brand-en{font-size:.62rem}
       .nav{display:flex;gap:.25rem;flex-wrap:wrap}
       .nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.93rem;padding:.5rem .7rem;border-radius:var(--r-full);transition:background .2s var(--ease),color .2s;min-height:44px;display:inline-flex;align-items:center}
       .nav a:hover{background:var(--brand-soft);color:var(--brand)}
@@ -69,7 +73,7 @@
       .header-actions{display:none;align-items:center;gap:.45rem;margin-left:auto}
       .menu-btn,.cart-btn{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none;text-decoration:none}
       .menu-btn:active,.cart-btn:active{background:var(--brand-soft);color:var(--brand)}
-      @media(max-width:900px){.nav{display:none}.brand small{display:none}.header-actions{display:flex}}
+      @media(max-width:900px){.nav{display:none}.header-actions{display:flex}}
       /* slide-in drawer */
       .drawer-backdrop{position:fixed;inset:0;background:rgba(4,26,17,.55);backdrop-filter:blur(3px);z-index:95;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
       .drawer-backdrop.open{opacity:1;pointer-events:auto}
@@ -100,7 +104,8 @@
       .hero .eyebrow{margin:0 0 .35rem;font-size:.78rem;line-height:1.2;font-weight:700;letter-spacing:.04em;color:#f2c94c}
       .hero h1{font-size:clamp(1.5rem,3.2vw,2.15rem);font-weight:800;max-width:52rem}
       .hero h1 .hl{color:#f2c94c;font-style:italic}
-      .hero .lede{margin-top:.5rem;font-size:.98rem;line-height:1.55;color:#cfe4d2;max-width:46rem}
+      .hero-ar{width:max-content;max-width:100%;margin-top:.28rem;font-family:"Aref Ruqaa",serif;font-size:1.12rem;font-weight:700;line-height:1.3;color:#f2c94c}
+      .hero .lede{margin-top:.45rem;font-size:.98rem;line-height:1.55;color:#cfe4d2;max-width:46rem}
       .hero .lede strong{color:#fff}
       .hero-points{display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:.85rem;font-size:.85rem;font-weight:600;color:#bfe3c6}
       .hero-points span{display:inline-flex;align-items:center;gap:.45rem}
@@ -650,7 +655,7 @@
     </div>
     <header class="topbar">
       <div class="wrap topbar-in">
-        <a class="brand" href="#top" aria-label="PakBazaar home"><span class="brand-mark">P</span><span><span class="brand-name">Pak<em>Bazaar</em></span><small>Trusted online shop</small></span></a>
+        <a class="brand" href="#top" aria-label="Areeq home"><img class="brand-mark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIGRlc2MiPgogIDx0aXRsZSBpZD0idGl0bGUiPkFyZWVxIGVtYmxlbTwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkEgZ29sZCBnZW9tZXRyaWMgYXJhYmVzcXVlIG9uIGFuIGVtZXJhbGQgYmFkZ2U8L2Rlc2M+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTUiIGZpbGw9IiMwNjNmMmEiLz4KICA8cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iNTgiIGhlaWdodD0iNTgiIHJ4PSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDZiMzQ0IiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iLjc4Ii8+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjJjOTRjIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgIDxwYXRoIGQ9Ik0zMiA5YzcgOCA4LjUgMTUuMiAwIDIzLTguNS03LjgtNy0xNSAwLTIzWiIvPgogICAgPHBhdGggZD0iTTU1IDMyYy04IDctMTUuMiA4LjUtMjMgMCA3LjgtOC41IDE1LTcgMjMgMFoiLz4KICAgIDxwYXRoIGQ9Ik0zMiA1NWMtNy04LTguNS0xNS4yIDAtMjMgOC41IDcuOCA3IDE1IDAgMjNaIi8+CiAgICA8cGF0aCBkPSJNOSAzMmM4LTcgMTUuMi04LjUgMjMgMC03LjggOC41LTE1IDctMjMgMFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMyIDI0LjggMzkuMiAzMiAzMiAzOS4yIDI0LjggMzJaIiBmaWxsPSIjZDZiMzQ0Ii8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMi42IiBmaWxsPSIjMDYzZjJhIi8+Cjwvc3ZnPgo=" alt=""><span class="brand-lockup"><span class="brand-ar" lang="ar" dir="rtl">عريق</span><span class="brand-en">AREEQ</span></span></a>
         <nav class="nav" aria-label="Main">
           <a href="#home" data-nav="home">Home</a>
           <a href="#wishlist" data-nav="wishlist">Wishlist</a>
@@ -686,7 +691,7 @@
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
       <div class="drawer-head">
-        <a class="brand" href="#top" style="margin:0"><span class="brand-mark" style="width:34px;height:34px;font-size:1.1rem">P</span><span><span class="brand-name" style="font-size:1.15rem">Pak<em>Bazaar</em></span></span></a>
+        <a class="brand" href="#top" aria-label="Areeq home" style="margin:0"><img class="brand-mark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIGRlc2MiPgogIDx0aXRsZSBpZD0idGl0bGUiPkFyZWVxIGVtYmxlbTwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkEgZ29sZCBnZW9tZXRyaWMgYXJhYmVzcXVlIG9uIGFuIGVtZXJhbGQgYmFkZ2U8L2Rlc2M+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTUiIGZpbGw9IiMwNjNmMmEiLz4KICA8cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iNTgiIGhlaWdodD0iNTgiIHJ4PSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDZiMzQ0IiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iLjc4Ii8+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjJjOTRjIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgIDxwYXRoIGQ9Ik0zMiA5YzcgOCA4LjUgMTUuMiAwIDIzLTguNS03LjgtNy0xNSAwLTIzWiIvPgogICAgPHBhdGggZD0iTTU1IDMyYy04IDctMTUuMiA4LjUtMjMgMCA3LjgtOC41IDE1LTcgMjMgMFoiLz4KICAgIDxwYXRoIGQ9Ik0zMiA1NWMtNy04LTguNS0xNS4yIDAtMjMgOC41IDcuOCA3IDE1IDAgMjNaIi8+CiAgICA8cGF0aCBkPSJNOSAzMmM4LTcgMTUuMi04LjUgMjMgMC03LjggOC41LTE1IDctMjMgMFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMyIDI0LjggMzkuMiAzMiAzMiAzOS4yIDI0LjggMzJaIiBmaWxsPSIjZDZiMzQ0Ii8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMi42IiBmaWxsPSIjMDYzZjJhIi8+Cjwvc3ZnPgo=" alt="" style="width:34px;height:34px"><span class="brand-lockup"><span class="brand-ar" lang="ar" dir="rtl" style="font-size:1.15rem">عريق</span><span class="brand-en">AREEQ</span></span></a>
         <button class="icon-btn" id="drawerClose" type="button" aria-label="Close menu">✕</button>
       </div>
       <nav class="drawer-nav" aria-label="Menu links">
@@ -715,8 +720,9 @@
 
     <div class="hero">
       <div class="wrap hero-in">
-        <p class="eyebrow">Pakistan's Trusted Online Store</p>
+        <p class="eyebrow">Areeq — Pakistan's Trusted Online Store</p>
         <h1>Good Products. <span class="hl">Honest Prices.</span> Delivered to Your Door.</h1>
+        <p class="hero-ar" lang="ar" dir="rtl">عريق · أصالة تثق بها</p>
         <p class="lede">Pay securely in advance with Easypaisa or JazzCash. Every order is checked before dispatch and backed by our 7-day guarantee.</p>
         <div class="hero-points">
           <span>
@@ -821,7 +827,7 @@
           <div class="coupon-banner">
             <div>
               <h2>Free delivery on your first order</h2>
-              <p>New to PakBazaar? Your first order has FREE delivery. Collect coupons too — at checkout we add your best coupon for you. No code to type.</p>
+              <p>New to Areeq? Your first order has FREE delivery. Collect coupons too — at checkout we add your best coupon for you. No code to type.</p>
             </div>
             <a class="btn btn-gold" href="#coupons">See coupons</a>
           </div>
@@ -830,7 +836,7 @@
 
       <section data-page="home" style="padding-top:0;">
         <div class="wrap">
-          <div class="sec-head slim"><h2>What Customers Say</h2><p>Real reviews from people who bought from PakBazaar.</p></div>
+          <div class="sec-head slim"><h2>What Customers Say</h2><p>Real reviews from people who bought from Areeq.</p></div>
           <div class="review-grid" id="homeReviews"><p style="color:var(--muted)">Loading reviews…</p></div>
         </div>
       </section>
@@ -861,8 +867,8 @@
           <div class="owner-box">
             <div class="owner-av" aria-hidden="true">Z</div>
             <div>
-              <h2 style="font-size:1.5rem;">Meet Zohaib — the person behind PakBazaar</h2>
-              <p style="color:var(--muted); margin-top:.5rem;">PakBazaar is run by one person, Zohaib. He picks every product himself, checks your payment, and packs your parcel. Every product is <strong style="color:var(--ink)">100% original</strong> and comes with a <strong style="color:var(--ink)">7-day check guarantee</strong>. Send a message on WhatsApp and Zohaib replies within minutes.</p>
+              <h2 style="font-size:1.5rem;">Meet Zohaib — the person behind Areeq</h2>
+              <p style="color:var(--muted); margin-top:.5rem;">Areeq is run by one person, Zohaib. He picks every product himself, checks your payment, and packs your parcel. Every product is <strong style="color:var(--ink)">100% original</strong> and comes with a <strong style="color:var(--ink)">7-day check guarantee</strong>. Send a message on WhatsApp and Zohaib replies within minutes.</p>
               <a class="btn btn-wa btn-sm" id="ownerWaBtn" href="#" target="_blank" rel="noopener" style="margin-top:1rem;">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.4-.7-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.3.6.4 0 .1 0 .7-.2 1.2Z"/></svg>
                 Chat with Zohaib
@@ -915,14 +921,14 @@
         <div class="wrap">
           <div class="sec-head"><h2>My Account</h2><p id="accountIntro">Login to see your profile and account options.</p></div>
           <div class="orders-guest" id="accountGuest">
-            <div><h3>Welcome to PakBazaar</h3><p>Login to see your profile, coupons and orders.</p></div>
+            <div><h3>Welcome to Areeq</h3><p>Login to see your profile, coupons and orders.</p></div>
             <div class="orders-guest-actions"><button class="btn btn-brand btn-sm" id="accountLoginBtn" type="button">Login</button><button class="btn btn-ghost btn-sm" id="accountSignupBtn" type="button">Create account</button></div>
           </div>
           <div class="account-shell hidden" id="accountUser">
             <div class="account-profile">
-              <div class="account-avatar" id="accountAvatar" aria-hidden="true">P</div>
+              <div class="account-avatar" id="accountAvatar" aria-hidden="true">A</div>
               <div>
-                <div class="account-name" id="accountName">PakBazaar customer</div>
+                <div class="account-name" id="accountName">Areeq customer</div>
                 <div class="account-contact"><span id="accountEmail"></span><span id="accountPhone"></span></div>
               </div>
             </div>
@@ -1165,7 +1171,7 @@
         <div class="wrap">
           <div class="sec-head">
             <h2>About Us</h2>
-            <p>PakBazaar brings carefully selected products to customers across Pakistan at honest prices.</p>
+            <p>Areeq brings carefully selected products to customers across Pakistan at honest prices.</p>
           </div>
           <div class="policy-grid">
             <div class="policy">
@@ -1220,7 +1226,7 @@
       <div class="wrap">
         <div class="foot-in">
           <div>
-            <h3>PakBazaar</h3>
+            <a class="brand footer-brand" href="#top" aria-label="Areeq home"><img class="brand-mark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIGRlc2MiPgogIDx0aXRsZSBpZD0idGl0bGUiPkFyZWVxIGVtYmxlbTwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkEgZ29sZCBnZW9tZXRyaWMgYXJhYmVzcXVlIG9uIGFuIGVtZXJhbGQgYmFkZ2U8L2Rlc2M+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTUiIGZpbGw9IiMwNjNmMmEiLz4KICA8cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iNTgiIGhlaWdodD0iNTgiIHJ4PSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDZiMzQ0IiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iLjc4Ii8+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjJjOTRjIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgIDxwYXRoIGQ9Ik0zMiA5YzcgOCA4LjUgMTUuMiAwIDIzLTguNS03LjgtNy0xNSAwLTIzWiIvPgogICAgPHBhdGggZD0iTTU1IDMyYy04IDctMTUuMiA4LjUtMjMgMCA3LjgtOC41IDE1LTcgMjMgMFoiLz4KICAgIDxwYXRoIGQ9Ik0zMiA1NWMtNy04LTguNS0xNS4yIDAtMjMgOC41IDcuOCA3IDE1IDAgMjNaIi8+CiAgICA8cGF0aCBkPSJNOSAzMmM4LTcgMTUuMi04LjUgMjMgMC03LjggOC41LTE1IDctMjMgMFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMyIDI0LjggMzkuMiAzMiAzMiAzOS4yIDI0LjggMzJaIiBmaWxsPSIjZDZiMzQ0Ii8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMi42IiBmaWxsPSIjMDYzZjJhIi8+Cjwvc3ZnPgo=" alt=""><span class="brand-lockup"><span class="brand-ar" lang="ar" dir="rtl">عريق</span><span class="brand-en">AREEQ</span></span></a>
             <p><strong>Pakistan's trusted online store.</strong> Good products, honest prices, and secure advance payment through Easypaisa or JazzCash. Every order includes a 7-day check guarantee.</p>
           </div>
           <div>
@@ -1253,7 +1259,7 @@
     <!-- AUTH MODAL -->
     <div class="overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
       <div class="sheet">
-        <div class="sheet-head"><div><h2 id="authTitle">Welcome to PakBazaar</h2><p id="authSub">Login or make a new account. Then you can order and see your orders.</p></div><button class="icon-btn" id="authClose" aria-label="Close">✕</button></div>
+        <div class="sheet-head"><div><h2 id="authTitle">Welcome to Areeq</h2><p id="authSub">Login or make a new account. Then you can order and see your orders.</p></div><button class="icon-btn" id="authClose" aria-label="Close">✕</button></div>
         <div class="auth-tabs"><button type="button" class="btn btn-brand btn-sm" id="tabLogin">Login</button><button type="button" class="btn btn-ghost btn-sm" id="tabSignup">Sign up</button></div>
         <button type="button" class="btn btn-google btn-block" id="googleBtn">
           <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.66-.22-2.45H12v4.64h6.45a5.52 5.52 0 0 1-2.4 3.58v2.97h3.88c2.27-2.09 3.57-5.17 3.57-8.74Z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.9l-3.88-2.97c-1.08.72-2.45 1.15-4.06 1.15-3.12 0-5.77-2.11-6.71-4.95H.29v3.07A11.99 11.99 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.29 14.33A7.2 7.2 0 0 1 4.91 12c0-.81.14-1.59.38-2.33V6.6H.29a12 12 0 0 0 0 10.8l5-3.07Z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.34.61 4.58 1.8l3.44-3.44A11.98 11.98 0 0 0 12 0 11.99 11.99 0 0 0 .29 6.6l5 3.07C6.23 6.86 8.88 4.75 12 4.75Z"/></svg>
@@ -1618,7 +1624,7 @@
 
         // Easypaisa account customers send advance payment to:
         easypaisaNumber: "0300-0000000",
-        easypaisaTitle: "PakBazaar",
+        easypaisaTitle: "Areeq",
 
         // Delivery charges in Rupees:
         deliveryFee: 250,
@@ -2741,7 +2747,7 @@
         $("#pdReviewText").value = "";
         $("#pdReviewErr").classList.remove("show");
         $("#pdName").textContent = p.name || "";
-        $("#pdCat").textContent = (p.category || "General") + " · PakBazaar";
+        $("#pdCat").textContent = (p.category || "General") + " · Areeq";
         detailVariant = null;
         setPdGallery(productGallery(p, null));
         renderPdVariant();
@@ -2759,7 +2765,7 @@
         if (pct) { sv.textContent = "Save " + pct + "%"; sv.classList.remove("hidden"); } else sv.classList.add("hidden");
         $("#pdDesc").textContent = p.desc || p.description || "";
         $("#pdWarranty").textContent = p.warranty || "7-day check guarantee — if it is broken or not good, we send a new one or give your money back";
-        $("#pdWaBtn").href = waLink("Assalam-o-Alaikum! I have a question about this product: " + (p.name || "") + " (" + fmt(Number(p.price || 0)) + ") on PakBazaar.");
+        $("#pdWaBtn").href = waLink("Assalam-o-Alaikum! I have a question about this product: " + (p.name || "") + " (" + fmt(Number(p.price || 0)) + ") on Areeq.");
         const inStock = p.inStock !== false;
         const ob = $("#pdOrderBtn");
         ob.disabled = !inStock;
@@ -2917,8 +2923,8 @@
         $("#paneSuccess").classList.add("on");
         $("#okOrderNumber").textContent = orderNumber;
         $("#okProofNote").classList.toggle("hidden", !proofNeedsWhatsapp);
-        $("#okProofWaBtn").href = waLink("Assalam-o-Alaikum! My PakBazaar order number is " + orderNumber + ". I am sending my payment screenshot.");
-        $("#okWaBtn").href = waLink("Assalam-o-Alaikum! I just placed order " + orderNumber + " on PakBazaar.");
+        $("#okProofWaBtn").href = waLink("Assalam-o-Alaikum! My Areeq order number is " + orderNumber + ". I am sending my payment screenshot.");
+        $("#okWaBtn").href = waLink("Assalam-o-Alaikum! I just placed order " + orderNumber + " on Areeq.");
         $(".sheet").scrollTop = 0;
       }
       $("#okDoneBtn").addEventListener("click", closeCheckout);
@@ -3057,7 +3063,7 @@
         const c = customerDetails();
         const t = totals();
         const lines = [
-          "*New Order — PakBazaar*",
+          "*New Order — Areeq*",
           "-----------------------------",
           "Product: " + state.product.name,
           state.variant ? ((state.product.variantLabel || "Color") + ": " + state.variant) : null,
@@ -3093,7 +3099,7 @@
         return "https://wa.me/" + intlWaNumber(STORE.whatsappNumber) + "?text=" + encodeURIComponent(text);
       }
       function refreshWaLinks() {
-        const link = waLink("Assalam-o-Alaikum! I have a question about a product on PakBazaar.");
+        const link = waLink("Assalam-o-Alaikum! I have a question about a product on Areeq.");
         ["topWaBtn", "footWaBtn", "contactWaBtn", "ownerWaBtn", "drawerWaBtn"].forEach(function (id) {
           const el = document.getElementById(id);
           if (el) el.href = link;
@@ -3283,7 +3289,7 @@
 
       $("#sendWaBtn").addEventListener("click", placeOrder);
       $("#waHelpBtn").addEventListener("click", function(){
-        const txt = state.product ? ("Assalam-o-Alaikum! I need help with my PakBazaar order for " + state.product.name + ".") : "Assalam-o-Alaikum! I have a question about PakBazaar.";
+        const txt = state.product ? ("Assalam-o-Alaikum! I need help with my Areeq order for " + state.product.name + ".") : "Assalam-o-Alaikum! I have a question about Areeq.";
         window.open(waLink(txt), "_blank");
       });
 
@@ -3344,7 +3350,7 @@
         const intro = $("#accountIntro");
         if (intro) intro.textContent = logged ? "Your profile and account options are here." : "Login to see your profile and account options.";
         if (!logged) return;
-        const name = accountProfile.name || currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "PakBazaar customer");
+        const name = accountProfile.name || currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "Areeq customer");
         const email = accountProfile.email || currentUser.email || "Email not added";
         const phone = accountProfile.phone || currentUser.phoneNumber || "Phone not added";
         $("#accountName").textContent = name;
@@ -3461,7 +3467,7 @@
             try { await fbDb.collection("wp_users").doc(cred.user.uid).set({ name:name, email:email, phone:phone, address:"", city:"", createdAt: firebase.firestore.FieldValue.serverTimestamp(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true }); } catch(_){}
           }
           closeAuth();
-          toast("Account made. Welcome to PakBazaar");
+          toast("Account made. Welcome to Areeq");
           if (pendingProduct) { const p = pendingProduct; const pv = pendingVariant; pendingProduct=null; pendingVariant=""; openCheckout(p, pv); }
         } catch(err){ errEl.textContent = friendlyErr(err); errEl.classList.add("show"); }
       });
